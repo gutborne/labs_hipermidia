@@ -14,31 +14,24 @@ for child in root:
 print(counting_pages)
 
 #second step: print the id and the title of each tag at the xml file
-count = 0
+count1 = 0
 """
 for child in root:
-    count += 1
+    count1 += 1
     node = child.iter()
     for n in node:
         if n.tag != 'text' and n.tag != 'page':
-            print(count, n.tag, n.text)
+            print(count1, n.tag, n.text)
 """
-#some useful functions from the etree documentation
-#this is being a different way to do the second step 
-"""
-for i in range(counting_pages):
-    for j in range(2):
-        print(root[i][j].text)
-"""
-#how to use iter()
-"""for title in root.iter('title'):
-    print(title.text)
-"""
-#this is being a different way to do the second step using findall and find
-"""
-for page in root.findall('page'):
-    count += 1
-    id = page.find('id').text
-    title = page.find('title').text
-    print(f"{count}{' '}{id}{' '}{title}")
-"""
+#third step: find some user-defined string in the title
+count2 = 0
+user_defined_str = "computers"
+for child in root.findall('page'):
+    title_words = child.find('title').text.split()
+    title = child.find('title').text
+    for word in title_words:
+        if(word.lower() == user_defined_str.lower()):
+            count2 += 1
+            print(f"{count2}{' '}{title}")
+
+#fourth step:  
