@@ -21,3 +21,23 @@ for child in root:
     for n in node:
         if n.tag != 'text' and n.tag != 'page':
             print(counting_pages, n.tag, n.text)
+
+#some useful functions from the etree documentation
+#this is being a different way to do the second step 
+"""
+for i in range(counting_pages):
+    for j in range(2):
+        print(root[i][j].text)
+"""
+#how to use iter()
+"""for title in root.iter('title'):
+    print(title.text)
+"""
+#this is being a different way to do the second step using findall and find
+"""
+for page in root.findall('page'):
+    count += 1
+    id = page.find('id').text
+    title = page.find('title').text
+    print(f"{count}{' '}{id}{' '}{title}")
+"""
