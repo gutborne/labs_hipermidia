@@ -104,3 +104,6 @@ def escrever_out_file(dict_tuples: dict):
       lista_out.append(string)
     f.writelines(lista_out)
 escrever_out_file(dict_data_pages)
+
+
+
