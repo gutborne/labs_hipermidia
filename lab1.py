@@ -70,10 +70,10 @@ print("\n                                     fifth step".upper())
 #Such titles must be ordered in descending order by the number of occurrences of the user-defined
 #string in the text that belongs to the page
 #change the name of the dict
-user_words_in_text = 0
+"""user_words_in_text = 0
 total_words_in_text = 0
 user_word_percentage = 0
-user_defined_str = "computer"
+user_defined_str = "the"
 dict_title_occur = {}
 dict_data_pages = []#list of tuples in which each tuple is filled with (word percentage, title, id)
 for child in root.findall('page'):
@@ -96,7 +96,9 @@ for child in root.findall('page'):
 def percentage_getter(tuple):
     return tuple[0]
 dict_data_pages.sort(key=percentage_getter, reverse=True)
-def escrever_out_file(dict_tuples: dict):
+for i in dict_data_pages:
+    print(i)"""
+"""def escrever_out_file(dict_tuples: dict):
   with open("teste.txt", 'w') as f:
     lista_out = list()
     for tuple in dict_tuples:
@@ -104,6 +106,42 @@ def escrever_out_file(dict_tuples: dict):
       lista_out.append(string)
     f.writelines(lista_out)
 escrever_out_file(dict_data_pages)
+"""
+#sixth step: remove the stop words
+print("\n                                     sixth step".upper())
+user_words_in_text = 0
+total_words_in_text = 0
+user_word_percentage = 0
+dict_title_occur = {}
+dict_data_pages = []#list of tuples in which each tuple is filled with (word percentage, title, id)
+print("type a word:")
+user_defined_str = input()
+while(len(user_defined_str) < 4):
+    print("wrong length! type again")
+    user_defined_str = input()
 
+for child in root.findall('page'):
+    text_words = child.find('text').text.split()
+    title_words = child.find('title').text.split()
+    title = child.find('title').text
+    id = child.find('id').text
+    for word in text_words:
+        if(len(word) >= 4):
+            total_words_in_text += 1
+        if(word.lower() == user_defined_str.lower()):
+            user_words_in_text += 1
+    user_word_percentage = round(user_words_in_text/total_words_in_text * 100, 3) #visualize the data better
+    for word in title_words:
+        if(user_defined_str.lower() == word.lower()):
+            user_word_percentage = round(user_word_percentage + (0.1 * user_word_percentage), 3)
+            break
+    dict_data_pages.append((user_word_percentage, title, id))
+    total_words_in_text = 0
+    user_words_in_text = 0
+def percentage_getter(tuple):
+    return tuple[0]
+dict_data_pages.sort(key=percentage_getter, reverse=True)
+for i in range(100):
+    print(dict_data_pages[i])
 
-
+    
