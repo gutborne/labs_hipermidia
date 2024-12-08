@@ -177,7 +177,7 @@ def percentage_calculator(page, user_defined_str):
             break
     return user_word_perc
 
-def is_cache_empty():
+def is_cache_empty(cache_memory):
     if(len(cache_memory) == 0):
         return True
     else:
@@ -185,7 +185,7 @@ def is_cache_empty():
     
 #this function returns True if the some keyword isn't found in the cache, but if it is returns False 
 def is_keyword_not_found(cache_memory, user_def_str):
-    if(is_cache_empty()):
+    if(is_cache_empty(cache_memory)):
         return True
     else:#if the cache isn't empty
         for result in cache_memory:
@@ -225,7 +225,7 @@ while(answer == 1):
     while(len(defined_str) < 4):
         print("wrong length! type again!")
         defined_str = input("type a word: ")
-    cache_is_empty = is_cache_empty()
+    cache_is_empty = is_cache_empty(cache_memory)
     is_search_not_found = is_keyword_not_found(cache_memory, defined_str)#cache isn't empty, but even so the word searched wasn't found
     print(f"\nis_keyword_not_found: {is_search_not_found}\n")
     if(cache_is_empty or is_search_not_found):
