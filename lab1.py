@@ -109,56 +109,6 @@ escrever_out_file(dict_data_pages)
 """
 #sixth step: remove the stop words
 print("\n                                     sixth step".upper())
-"""user_words_in_text = 0
-total_words_in_text = 0
-user_word_percentage = 0
-dict_title_occur = {}
-dict_data_pages = []#list of tuples in which each tuple is filled with (word percentage, title, id)
-print("type a word:")
-user_defined_str = input()
-while(len(user_defined_str) < 4):
-    print("wrong length! type again")
-    user_defined_str = input()
-
-for child in root.findall('page'):
-    text_words = child.find('text').text.split()
-    title_words = child.find('title').text.split()
-    title = child.find('title').text
-    id = child.find('id').text
-    for word in text_words:
-        if(len(word) >= 4):
-            total_words_in_text += 1
-        if(word.lower() == user_defined_str.lower()):
-            user_words_in_text += 1
-    user_word_percentage = round(user_words_in_text/total_words_in_text * 100, 3) #visualize the data better
-    for word in title_words:
-        if(user_defined_str.lower() == word.lower()):
-            user_word_percentage = round(user_word_percentage + (0.1 * user_word_percentage), 3)
-            break
-    dict_data_pages.append((user_word_percentage, title, id))
-    total_words_in_text = 0
-    user_words_in_text = 0
-def percentage_getter(tuple):
-    return tuple[0]
-dict_data_pages.sort(key=percentage_getter, reverse=True)
-for i in range(10):
-    print(dict_data_pages[i])
-
-"""
-#seventh step: cache the queries
-print("\n                                     seventh step".upper())
-class Result:
-    keyword = ""
-    def __init__(self, keyword):
-        self.keyword = keyword
-    results = []
-    def __str__(self):
-        return f"word: {self.keyword} \n queries: \n {self.results}"
-
-#child 
-
-
-
 def percentage_calculator(page, user_defined_str):
     words_in_text = 0 #user-defined string in the text
     total_words = 0 #total words in the text of the page in which the len(word) >= 4 
@@ -188,37 +138,32 @@ def is_keyword_not_found(cache_memory, user_def_str):
     if(is_cache_empty(cache_memory)):
         return True
     else:#if the cache isn't empty
-        for result in cache_memory:
-            if(result.keyword.lower() == user_def_str.lower()):
+        for key in cache_memory:
+            if(key.lower() == user_def_str.lower()):
                 return False
         return True
 
 def percentage_getter(tuple):
     return tuple[0]
 
-def print_result(result):
-    for count in range(min(10, len(result))):
-        print(result[count])
 
 def set_result(user_def_str):
     print("->inside set_result()" + "\n" + "user_def_str: " + user_def_str + "\n")
-    result = Result(user_def_str)
+    dict_result = {}
+    result = []
     root_tree = tree.getroot()
     count = 0
     for page in root_tree.findall('page'):
         title = page.find('title').text
         id = page.find('id').text
         user_word_perc = percentage_calculator(page, user_def_str)
-        result.results.append((user_word_perc, title, id))
-        result.keyword = user_def_str
-    results_sorted = sorted(result.results, key=percentage_getter, reverse=True)
-    result.results = results_sorted
-    for tuple in result.results[:5]:
-        print(tuple)
-    return result
+        result.append((user_word_perc, title, id))
+    result.sort(key=percentage_getter, reverse=True)
+    dict_result = {user_def_str: result}
+    return dict_result
 
-cache_memory = []#list of objects in which each one has a keyword and list of results
 user_word_perc = 0
+cache_memory = {}#dict in which each key is a user-defined string and the value is a list of results
 answer = int(input("would you like to search? "))
 while(answer == 1):
     defined_str = input("type a word: ") #user-defined string
@@ -231,29 +176,13 @@ while(answer == 1):
     if(cache_is_empty or is_search_not_found):
         print("will read the xml page!\n")
         print("user-defined string: " + defined_str + "\n")
-        result = set_result(defined_str)
-        print("result.keyword: " + result.keyword + "\n")
-        cache_memory.append(result)
-        for result_object in cache_memory:
-            #res = cache_memory[i]
-            # Safely get the keyword attribute with a default value
-            keyword = getattr(result_object, 'keyword', 'Unknown')
-            print(f"attribute: {keyword}")
-            for tuple in result_object.results[:5]:
-                print(tuple)
-            print("\n")
-        # Print the first 100 elements of result.results if available
-        i = 0
-        for result in cache_memory:  # Avoid IndexError
-            print(f"cache[{i}]: ")
-            for tuple in result.results[:5]:
-                print(tuple)
-            i += 1
+        cache_memory.update(set_result(defined_str))
+        list_result = cache_memory[defined_str]
+        for tuple in list_result[:10]:
+            print(tuple)
     else:
         print("going to find the word on cache!\n")
-        for res in cache_memory:
-            if(res.keyword.lower() == defined_str.lower()):
-                print_result(res.results)
+        list_result = cache_memory[defined_str]
+        for tuple in list_result[:10]:
+            print(tuple)
     answer = int(input("would you like to search again? "))
-#to do:
-#sort correctly in the cache
